@@ -10,26 +10,28 @@ public class CharacterController : MonoBehaviour
     public float rotationSpeed = 2.0f;
     public float camRotationSpeed = 1.5f;
     GameObject cam;
+    Rigidbody myRigidbody;
 
     // Start is called before the first frame update
     void Start()
     {
-        cam = GameObject.Find("Main Camera");    }
+        cam = GameObject.Find("Main Camera");
+        myRigidbody = GetComponent<Rigidbody>();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.W))
-        {
-            //data types are
-            //[vector 3]}-----------------------------------------------   [float]}----------------
-            transform.position = transform.position + (transform.forward * Input.GetAxis("Vertical") * playerSpeed);
-        }
+        Vector3 forwardsVelocity = transform.forward * Input.GetAxis("Vertical") * playerSpeed;
         if (Input.GetKey(KeyCode.S))
         {
-            transform.position = transform.position + (transform.forward * Input.GetAxis("Vertical") * playerSpeed / 4);
+            forwardsVelocity = transform.forward * Input.GetAxis("Vertical") * playerSpeed / 4;
         }
-        transform.position = transform.position + (transform.right * Input.GetAxis("Horizontal") * playerSpeed / 4);
+        Vector3 sidewaysVelocity = transform.right * Input.GetAxis("Horizontal") * playerSpeed / 4;
+
+        Vector3 finalVelocity = forwardsVelocity + sidewaysVelocity;
+
+        myRigidbody.velocity = new Vector3(finalVelocity.x, myRigidbody.velocity.y, finalVelocity.z);
 
         rotation = rotation + Input.GetAxis("Mouse X") * rotationSpeed;
         transform.rotation = Quaternion.Euler(new Vector3(0.0f, rotation, 0.0f));
