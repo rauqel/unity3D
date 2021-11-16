@@ -12,8 +12,10 @@ public class CharacterController : MonoBehaviour
     public float maxSprint = 5.0f;
     float sprintTimer;
 
-    public CapsuleCollider height;
+    public CapsuleCollider playerController;
     bool crouching = false;
+    public float standingHeight = 2.0f;
+    public float crouchingHeight = 0.3f;
 
     public float rotation = 0.0f;
     public float camRotation = 0.0f;
@@ -22,6 +24,7 @@ public class CharacterController : MonoBehaviour
     GameObject cam;
 
     bool isOnGround;
+    bool doubleJump;
     public GameObject groundChecker;
     public LayerMask groundLayer;
 
@@ -81,18 +84,31 @@ public class CharacterController : MonoBehaviour
             myRigidbody.AddForce(transform.up * jumpForce);
         }
 
-        //crouch mechanic
-        height = GetComponent<CapsuleCollider>();
-
-        if (Input.GetKeyDown(KeyCode.C) && isOnGround && (crouching == false))
+        if (isOnGround == false && Input.GetKeyDown(KeyCode.Space) && doubleJump == false)
         {
-            crouching = true;
-            height.height = new Vector3(1.0f, 0.3f, 1.0f);
+            myRigidbody.AddForce(transform.up * jumpForce);
+            doubleJump = true;
         }
-        if (Input.GetKeyDown(KeyCode.C) && isOnGround && (crouching == true))
+
+        if (isOnGround == true)
         {
-            crouching = false;
-            height.height = new Vector3(1.0f, 1.0f, 1.0f);
+            doubleJump = false;
+        }
+
+        //crouch mechanic
+        playerController = GetComponent<CapsuleCollider>();
+
+        if (Input.GetKeyDown(KeyCode.C) && isOnGround == true)
+        {
+            if (crouching == false)
+            {
+                playerController.height = crouchingHeight;
+                crouching = true;
+            } else
+            {
+                playerController.height = standingHeight;
+                crouching = false;
+            }
         }
     }
 }
