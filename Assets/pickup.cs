@@ -15,6 +15,7 @@ public class pickup : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        coincount.scoreValue += 1;
         Destroy(gameObject);
     }
 
