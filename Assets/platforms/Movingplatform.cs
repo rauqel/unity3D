@@ -10,7 +10,9 @@ public class Movingplatform : MonoBehaviour
 
     public float platformSpeed;
 
-    bool isReversing = false; 
+    bool isReversing = false;
+    public bool isMoving;
+  
 
     // Start is called before the first frame update
     void Start()
@@ -21,21 +23,24 @@ public class Movingplatform : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isReversing == false)
+        if (isMoving && isActive)
         {
-            //                                                                                  platformSpeed defines the speed of the platforms movement
-            myPlatform.position = Vector3.MoveTowards(myPlatform.position, myEndPoint.position, platformSpeed);
-            if (myPlatform.position == myEndPoint.position)
+            if (isReversing == false)
             {
-                isReversing = true;
+                //                                                                                  platformSpeed defines the speed of the platforms movement
+                myPlatform.position = Vector3.MoveTowards(myPlatform.position, myEndPoint.position, platformSpeed);
+                if (myPlatform.position == myEndPoint.position)
+                {
+                    isReversing = true;
+                }
             }
-        }
-        else
-        {
-            myPlatform.position = Vector3.MoveTowards(myPlatform.position, myStartPoint.position, platformSpeed);
-            if (myPlatform.position == myStartPoint.position)
+            else
             {
-                isReversing = false;
+                myPlatform.position = Vector3.MoveTowards(myPlatform.position, myStartPoint.position, platformSpeed);
+                if (myPlatform.position == myStartPoint.position)
+                {
+                    isReversing = false;
+                }
             }
         }
     }
