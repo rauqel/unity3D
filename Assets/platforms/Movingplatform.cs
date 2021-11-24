@@ -12,7 +12,7 @@ public class Movingplatform : MonoBehaviour
 
     bool isReversing = false;
     public bool isMoving;
-  
+    public triggerplatform trigger;
 
     // Start is called before the first frame update
     void Start()
@@ -23,8 +23,10 @@ public class Movingplatform : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isMoving && isActive)
+        if (isMoving)
         {
+            trigger.isActive = true;
+
             if (isReversing == false)
             {
                 //                                                                                  platformSpeed defines the speed of the platforms movement
@@ -36,6 +38,8 @@ public class Movingplatform : MonoBehaviour
             }
             else
             {
+                trigger.isActive = false;
+
                 myPlatform.position = Vector3.MoveTowards(myPlatform.position, myStartPoint.position, platformSpeed);
                 if (myPlatform.position == myStartPoint.position)
                 {

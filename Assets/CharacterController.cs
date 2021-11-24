@@ -30,6 +30,8 @@ public class CharacterController : MonoBehaviour
 
     public float jumpForce = 300.0f;
 
+    Animator myAnim;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +39,8 @@ public class CharacterController : MonoBehaviour
         myRigidbody = GetComponent<Rigidbody>();
 
         sprintTimer = maxSprint;
+
+        myAnim = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -50,6 +54,7 @@ public class CharacterController : MonoBehaviour
         Vector3 finalVelocity = forwardsVelocity + sidewaysVelocity;
 
         myRigidbody.velocity = new Vector3(finalVelocity.x, myRigidbody.velocity.y, finalVelocity.z);
+        myAnim.SetFloat("speed", finalVelocity.magnitude);
 
         //sprint and stamina
         if (Input.GetKey(KeyCode.LeftShift) && sprintTimer > 0.0f)
@@ -78,14 +83,17 @@ public class CharacterController : MonoBehaviour
 
         //jump mechanics
         isOnGround = Physics.CheckSphere(groundChecker.transform.position, 0.1f, groundLayer);
+        myAnim.SetBool("isOnGround", isOnGround);
 
         if (isOnGround == true && Input.GetKeyDown(KeyCode.Space))
         {
+            myAnim.SetTrigger("jumped");
             myRigidbody.AddForce(transform.up * jumpForce);
         }
 
         if (isOnGround == false && Input.GetKeyDown(KeyCode.Space) && doubleJump == false)
         {
+            myAnim.SetTrigger("double jumped");
             myRigidbody.AddForce(transform.up * jumpForce);
             doubleJump = true;
         }
@@ -110,5 +118,16 @@ public class CharacterController : MonoBehaviour
                 crouching = false;
             }
         }
+
+        //falling animation
+        if (!isOnGround && Input.GetKey(KeyCode.None))
+        {
+            myAnim.SetBool("falling", true);
+        }
+        else
+        {
+            myAnim.SetBool("falling", false);
+        }
+
     }
 }
